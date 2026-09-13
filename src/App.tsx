@@ -1,7 +1,5 @@
 import {
   Refine,
-  GitHubBanner,
-  WelcomePage,
   Authenticated,
 } from "@refinedev/core";
 import { DevtoolsPanel, DevtoolsProvider } from "@refinedev/devtools";
@@ -25,11 +23,14 @@ import { useNotificationProvider } from "./components/refine-ui/notification/use
 import { Toaster } from "./components/refine-ui/notification/toaster";
 import { ThemeProvider } from "./components/refine-ui/theme/theme-provider";
 import "./App.css";
+import { BookOpen, Home } from "lucide-react";
+import Dashboard from "@/pages/Dashboard";
+import SubjectList from "./pages/subjects/List";
+import SubjectCreate from "./pages/subjects/Create";
 
 function App() {
   return (
     <BrowserRouter>
-      <GitHubBanner />
       <RefineKbarProvider>
         <ThemeProvider>
           <DevtoolsProvider>
@@ -42,10 +43,43 @@ function App() {
                 warnWhenUnsavedChanges: true,
                 projectId: "f8uaZT-mEVfS8-2hkI3d",
               }}
+              resources={[
+                {
+                  name: "dashbord",
+                  list: "/",
+                  meta: {
+                    label: "Dashbord",
+                    icon: <Home />,
+                  },
+                },
+                {
+                  name: "subjects",
+                  list: "/subjects",
+                  create: "/subjects/create",
+                  meta: {
+                    label: "Subjects",
+                    icon: <BookOpen />,
+                  },
+                }
+              ]}
+
             >
               <Routes>
-                <Route index element={<WelcomePage />} />
+                <Route element={
+                  <Layout>
+                      <Outlet />
+                  </Layout> }>
+                    <Route path={'/'} element={<Dashboard />} />
+
+                    <Route path="/subjects" >
+                        <Route index element={<SubjectList />} />
+                        <Route path="create" element={<SubjectCreate />} />
+                    </Route>
+                  <Route/>
+                </Route>
+      
               </Routes>
+
               <Toaster />
               <RefineKbar />
               <UnsavedChangesNotifier />
